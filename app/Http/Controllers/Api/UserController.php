@@ -7,180 +7,120 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UserRequest;
 use App\Repositories\User\UserRepository;
-use Illuminate\Contracts\Support\Renderable;
+use App\Services\CrudService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
-    public $status = 200;
-    public $message = '';
+    public $userService;
+    public $repository;
+    public $response;
 
-    public function register(RegisterRequest $request, UserRepository $repository){
-        $user = $repository->register($request);
-        //create token
-        $token = $user->createToken('authToken')->plainTextToken;
-        $this->message = config('message.user_register.success');
-
-        $response = [
-            'status_code'=> $this->status,
-            'message'=> $this->message,
-            'data' =>   [
-                'user' => $user,
-                #'token' => $token
-            ]
-        ];
-        return response($response,201);
+    public function __construct(UserRepository $repository, CrudService $userService)
+    {
+        $this->repository = $repository;
+        $this->userService = $userService;
     }
 
     /**
-     * Show the list user
-     *
+     * @description Display a listing of the resource for user
+     * @param null
+     * @return JsonResponse
+     */
+    public function index(): JsonResponse
+    {
+        $listUser = $this->repository->findAll();
+        return $this->responseSuccess($listUser);
+    }
+
+    /**
+     * @description Store a newly created resource in storage.
      * @param UserRequest $request
-     * @param UserRepository $repository
      * @return JsonResponse
+     * @throws \Exception
      */
-    public function login(LoginRequest $request, UserRepository $repository): JsonResponse
-    {
-        $credentials = $request->only('email', 'password');
-        if (!Auth::attempt($credentials)) {
-            $this->status = config('status.error');
-            $this->message = config('message.user_login.fail');
-        }
-        $user = $repository->findByEmail($request->get('email'));
-        if (!Hash::check($request->get('password'), $user->password)) {
-            $this->status = config('status.not_found');
-            $this->message = config('message.user_login.wrong');
-        }
-        $tokenResult = $user->createToken('authToken')->plainTextToken;
-        return response()->json([
-            'status_code' => 200,
-            'data' => [
-                'access_token' => $tokenResult,
-                'user' => $user
-            ]
-        ]);
-    }
-
-    /**
-     * Log out user
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-     */
-    public function logout(Request $request)
-    {
-        // Revoke all tokens
-        auth()->user()->tokens()->delete();
-
-        return response()->json([
-            'status_code' => 200,
-            'message' => config('message.user_logout.success'),
-        ]);
-    }
-
-    /**
-     * Show the list user
-     *
-     * @param UserRepository $repository
-     * @return JsonResponse
-     */
-    public function index(UserRepository $repository): JsonResponse
-    {
-        $listUser = $repository->findAll();
-        return response()->json($listUser);
-    }
-
-    /**
-     * Create new user
-     *
-     * @param UserRequest $request
-     * @param UserRepository $repository
-     * @return JsonResponse
-     */
-    public function create(UserRequest $request, UserRepository $repository): JsonResponse
+    public function store(UserRequest $request): JsonResponse
     {
         if ($request->isMethod('post') && Auth('sanctum')->check()) {
-            if (!empty($request)) {
-                $user = $repository->createUser([
-                    'name' => $request->get('name'),
-                    'age' => $request->get('age'),
-                    'class' => $request->get('class_id'),
-                    'email' => $request->get('email'),
-                    'password' => Hash::make($request->get('password'))
-                ]);
-                if (!$user->exists) {
-                    $this->status = config('status.error');
+            try {
+                if (!empty($request)) {
+                    $user = $this->userService->create($request);
+                    if (!$user->exists) {
+                        return $this->responseFail();
+                    }
                 }
-                $this->message = config('message.user_add.success');
+            } catch (\Exception $exception) {
+                return $this->responseException($exception->getMessage());
             }
         }
-        return response()->json([
-                'message' => $this->message,
-                'status_code' => $this->status
-            ]
-        );
+        return $this->responseSuccess();
     }
 
-    public function update(UserRequest $request, UserRepository $repository, $id): JsonResponse
+    /**
+     * @description Update the specified resource in storage.
+     * @param UserRequest $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function update(UserRequest $request, $id): JsonResponse
     {
         if ($request->isMethod('put') && Auth('sanctum')->check() && $id) {
             if (!empty($request)) {
-                $user = $repository->findById($id);
+                $user = $this->repository->findById($id);
                 if (!$user) {
-                    $this->status = config('status.not_found');
-                    $this->message = config('message.user_update.not_found');
+                    return $this->responseNotFound();
                 } else {
-                    $userUpdate = $repository->updateUser($id, [
-                        'name' => $request->get('name'),
-                        #'age' => $request->get('age'),
-                        #'class' => $request->get('class_id'),
-                        'email' => $request->get('email'),
-                    ]);
+                    $userUpdate = $this->userService->update($id,$request);
                     if (!$userUpdate) {
-                        $this->status = config('status.error');
+                        return $this->responseFail();
                     }
                 }
             }
         }
-        return response()->json([
-            'message' => $this->message,
-            'status_code' => $this->status
-        ]);
+        return $this->responseSuccess();
     }
 
-    public function view(UserRequest $request, UserRepository $repository, $id): JsonResponse
+    /**
+     * @description Show specific user
+     * @param UserRequest $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function show(UserRequest $request, $id): JsonResponse
     {
         $user = [];
         if ($request->isMethod('get')) {
             if (Auth('sanctum')->check() && $id) {
-                $user = $repository->findById($id);
+                $user = $this->repository->findById($id);
                 if (!$user) {
-                    $this->status = config('status.not_found');
-                    $this->message = config('message.user_update.not_found');
+                    return $this->responseNotFound();
                 }
             }
         }
-        return response()->json($user, $this->status);
+        return $this->responseSuccess($user);
     }
 
-    public function destroy(Request $request, UserRepository $repository, $id): JsonResponse
+    /**
+     * @description Delete specific user
+     * @param UserRequest $request
+     * @param $id
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function destroy(Request $request, $id): JsonResponse
     {
         if ($request->isMethod('delete')) {
             if (Auth('sanctum')->check() && $id) {
-                $user = $repository->findById($id);
+                $user = $this->repository->findById($id);
                 if (!$user) {
-                    $this->status = config('status.not_found');
-                    $this->message = config('message.user_update.not_found');
+                    return $this->responseNotFound();
                 }
-                $repository->deleteId($id);
+                $this->repository->deleteId($id);
             }
         }
-        return response()->json([
-            'message' => $this->message,
-            'status_code' => $this->status
-        ]);
+        return $this->responseSuccess();
     }
 }

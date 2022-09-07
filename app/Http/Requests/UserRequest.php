@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
         return [
             'name' => 'required|max:50',
             'age' => 'required|numeric',
-            'class' => 'required|numeric',
+            'class_id' => 'required|numeric',
             'email' => $emailValidation,
         ];
     }
@@ -39,8 +39,8 @@ class UserRequest extends FormRequest
             'name.max' => 'Name character maximum is 50',
             'age.required' => 'Age is not empty',
             'age.numeric' => 'Age required number',
-            'class.required' => 'Class is not empty',
-            'class.max' => 'Class character maximum is 250',
+            'class_id.required' => 'Classes is not empty',
+            'class_id.max' => 'Classes character maximum is 250',
             'email.required' => 'Email is not empty',
             'email.email' => 'Type email is not right',
             'email.unique' => 'This email is exist, please choose a new one',

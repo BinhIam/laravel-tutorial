@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\User;
+namespace App\Repositories\Classes;
 
 use App\Models\User;
 use Exception;
@@ -12,7 +12,7 @@ use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
 /**
  * Classes UserRepository.
  */
-class UserRepository extends BaseRepository implements UserRepositoryInterface
+class ClassRepository extends BaseRepository implements ClassRepositoryInterface
 {
     /**
      * @description Return the model
@@ -28,19 +28,15 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      * @param array $request
      * @return Model
      */
-    public function createUser($request): Model
+    public function createClass($request): Model
     {
-        return $this->create($request);
-    }
-
-    /**
-     * @description Register new user
-     * @param array $request
-     * @return Model
-     */
-    public function register($request): Model
-    {
-        return $this->create($request);
+        return $this->create([
+            'name' => $request->get('name'),
+            'age' => $request->get('age'),
+            'class' => $request->get('class_id'),
+            'email' => $request->get('email'),
+            'password' => Hash::make($request->get('password'))
+        ]);
     }
 
     /**
@@ -50,7 +46,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      * @param array $option
      * @return Collection|Model
      */
-    public function updateUser($id, array $array, $option = [])
+    public function updateClass($id, array $array, $option = [])
     {
         return $this->updateById($id, $array);
     }
@@ -91,15 +87,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function deleteId($id): ?bool
     {
         return $this->deleteById($id);
-    }
-
-    /**
-     * @description Find by column
-     * @return Model|UserRepository|null
-     */
-    public function findByEmail($value)
-    {
-        return $this->getByColumn($value, 'email');
     }
 
 }
