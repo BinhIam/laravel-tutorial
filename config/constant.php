@@ -5,7 +5,8 @@ return [
         'wrong_credential' => 'Wrong credential',
         'success' => 'Process successfully',
         'fail' => 'Process fail',
-        'not_found' => 'Records not found'
+        'not_found' => 'Records not found',
+        'exception' => 'An error has occurred'
     ],
     'status' => [
         'bad_request' => 400,

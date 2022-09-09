@@ -61,7 +61,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      */
     public function findAll(): array
     {
-        return $this->all();
+        return $this->all()->toArray();
     }
 
     /**

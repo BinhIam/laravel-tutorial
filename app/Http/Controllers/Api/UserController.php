@@ -3,127 +3,84 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\UserRequest;
-use App\Repositories\User\UserRepository;
-use App\Services\CrudService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\ServiceProvider;
 
 class UserController extends BaseController
 {
-    public CrudService $userService;
-    public UserRepository $repository;
-
-    public function __construct(UserRepository $repository, CrudService $userService)
-    {
-        $this->repository = $repository;
-        $this->userService = $userService;
-    }
 
     /**
      * @description Display a listing of the resource for user
-     * @param null
-     * @return JsonResponse
+     *
+     * @return JsonResponse|ServiceProvider
      */
-    public function index(): JsonResponse
+    public function index(): JsonResponse|ServiceProvider
     {
-        $listUser = $this->repository->findAll();
-        return $this->responseSuccess($listUser);
+        $listUser = $this->userService->findAll();
+        return $this->responseHelper->responseSuccess($listUser);
     }
 
     /**
      * @description Store a newly created resource in storage.
+     *
      * @param UserRequest $request
-     * @return JsonResponse
+     * @return JsonResponse|ServiceProvider
      * @throws Exception
      */
-    public function store(UserRequest $request): JsonResponse
+    public function store(UserRequest $request): JsonResponse|ServiceProvider
     {
         try {
-            if ($request->isMethod('post') && Auth('sanctum')->check()) {
-                if (!empty($request)) {
-                    $user = $this->userService->create($request);
-                    if (!$user->exists) {
-                        return $this->responseFail();
-                    }
-                }
-            }
+            return $this->userService->create($request);
         } catch (Exception $exception) {
-            return $this->responseException($exception->getMessage());
+            return $this->responseHelper->responseException($exception);
         }
-        return $this->responseSuccess();
     }
 
     /**
      * @description Update the specified resource in storage.
+     *
      * @param UserRequest $request
      * @param $id
-     * @return JsonResponse
+     * @return JsonResponse|ServiceProvider
      */
-    public function update(UserRequest $request, $id): JsonResponse
+    public function update(UserRequest $request, $id): JsonResponse|ServiceProvider
     {
         try {
-            if ($request->isMethod('put') && Auth('sanctum')->check() && $id) {
-                if (!empty($request)) {
-                    $user = $this->repository->findById($id);
-                    if (!$user) {
-                        return $this->responseNotFound();
-                    } else {
-                        $userUpdate = $this->userService->update($id,$request);
-                        if (!$userUpdate) {
-                            return $this->responseFail();
-                        }
-                    }
-                }
-            }
+            return $this->userService->update($id, $request);
         } catch (Exception $exception) {
-            return $this->responseException($exception->getMessage());
+            return $this->responseHelper->responseException($exception);
         }
-        return $this->responseSuccess();
     }
 
     /**
      * @description Show specific user
-     * @param UserRequest $request
+     *
      * @param $id
-     * @return JsonResponse
+     * @return JsonResponse|ServiceProvider
      */
-    public function show(UserRequest $request, $id): JsonResponse
+    public function show($id): JsonResponse|ServiceProvider
     {
-        $user = [];
         try {
-            if ($request->isMethod('get') && Auth('sanctum')->check() && $id) {
-                $user = $this->repository->findById($id);
-                if (!$user) {
-                    return $this->responseNotFound();
-                }
-            }
+            return $this->userService->show($id);
         } catch (Exception $exception) {
-            return $this->responseException($exception->getMessage());
+            return $this->responseHelper->responseException($exception);
         }
-        return $this->responseSuccess($user);
     }
 
     /**
      * @description Delete specific user
-     * @param UserRequest $request
+     *
      * @param $id
-     * @return JsonResponse
-     * @throws Exception
+     * @return JsonResponse|ServiceProvider
      */
-    public function destroy(Request $request, $id): JsonResponse
+    public function destroy($id): JsonResponse|ServiceProvider
     {
         try {
-            if ($request->isMethod('delete') && Auth('sanctum')->check() && $id) {
-                $user = $this->repository->findById($id);
-                if (!$user) {
-                    return $this->responseNotFound();
-                }
-                $this->repository->deleteId($id);
-            }
+            return $this->userService->delete($id);
         } catch (Exception $exception) {
-            return $this->responseException($exception->getMessage());
+            return $this->responseHelper->responseException($exception);
         }
-        return $this->responseSuccess();
     }
 }

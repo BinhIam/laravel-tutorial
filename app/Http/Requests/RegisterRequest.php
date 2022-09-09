@@ -25,7 +25,6 @@ class RegisterRequest extends FormRequest
     {
         $emailValidation = auth()->user() ? 'required|email' : 'required|email|unique:users';
         return [
-            'name' => 'required|max:50',
             'email' => $emailValidation,
             'password' => 'required|string'
         ];
@@ -39,8 +38,6 @@ class RegisterRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Name is not empty',
-            'name.max' => 'Name character maximum is 50',
             'email.required' => 'Email is not empty',
             'email.email' => 'Type email is not right',
             'email.unique' => 'This email is exist, please choose a new one',
