@@ -50,7 +50,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      * @param array $option
      * @return Collection|Model
      */
-    public function updateUser($id, array $array, $option = [])
+    public function updateUser($id, array $array, $option = []): Model|Collection
     {
         return $this->updateById($id, $array);
     }
@@ -75,9 +75,10 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     /**
      * @description Count all user instant
+     * @param $id
      * @return Collection|Model
      */
-    public function findById($id)
+    public function findById($id): Model|Collection
     {
         return $this->getById($id);
     }
@@ -95,9 +96,10 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     /**
      * @description Find by column
+     * @param $value
      * @return Model|UserRepository|null
      */
-    public function findByEmail($value)
+    public function findByEmail($value): Model|UserRepository|null
     {
         return $this->getByColumn($value, 'email');
     }

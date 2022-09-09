@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldToClassTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddFieldToClassTable extends Migration
      */
     public function up()
     {
-        Schema::table('class', function (Blueprint $table) {
+        Schema::table('classes', function (Blueprint $table) {
             $table->string('name');
             $table->integer('slot');
         });
@@ -26,9 +26,9 @@ class AddFieldToClassTable extends Migration
      */
     public function down()
     {
-        Schema::table('class', function (Blueprint $table) {
+        Schema::table('classes', function (Blueprint $table) {
             $table->dropColumn('name');
             $table->dropColumn('slot');
         });
     }
-}
+};

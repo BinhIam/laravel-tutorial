@@ -11,7 +11,7 @@ class UserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -32,6 +32,11 @@ class UserRequest extends FormRequest
         ];
     }
 
+    /**
+     * Get the validation message that apply to the request.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [

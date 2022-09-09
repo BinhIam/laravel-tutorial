@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends BaseController
 {
-    public $repository;
-    public $userService;
+    public UserRepository $repository;
+    public CrudService $userService;
     public $status = 200;
     public $message = '';
 
@@ -31,13 +31,16 @@ class AuthController extends BaseController
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = $this->userService->create($request);
-        $this->message = config('message.user_register.success');
-        return $this->response($this->status, $this->message,
-            [
-                'user' => $user
-            ]
-        );
+        try {
+            // Create new user instantly
+            $user = $this->userService->create($request);
+            if (!$user->exists) {
+                return $this->responseFail();
+            }
+            return $this->responseSuccess(['user' => $user]);
+        } catch (\Exception $exception) {
+            return $this->responseException($exception->getMessage());
+        }
     }
 
     /**
@@ -47,26 +50,26 @@ class AuthController extends BaseController
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        // Accept only email, password
-        $credentials = $request->only('email', 'password');
-        if (!Auth::attempt($credentials)) {
-            $this->status = config('status.error');
-            $this->message = config('message.user_login.fail');
-        }
-        // Find user by email
-        $user = $this->repository->findByEmail($request->get('email'));
-        if (!Hash::check($request->get('password'), $user->password)) {
-            $this->status = config('status.not_found');
-            $this->message = config('message.user_login.wrong');
-        }
-        // Generate current token for using other api
-        $tokenResult = $user->createToken('authToken')->plainTextToken;
-        return $this->response($this->status, $this->message,
-            [
+        try {
+            // Accept only email, password
+            $credentials = $request->only('email', 'password');
+            if (!Auth::attempt($credentials)) {
+                return $this->responseFail();
+            }
+            // Find user by email
+            $user = $this->repository->findByEmail($request->get('email'));
+            if (!Hash::check($request->get('password'), $user->password)) {
+                return $this->responseNotFound();
+            }
+            // Generate current token for using other api
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
+            return $this->responseSuccess([
                 'access_token' => $tokenResult,
                 'user' => $user
-            ]
-        );
+            ]);
+        } catch (\Exception $exception) {
+            return $this->responseException($exception->getMessage());
+        }
     }
 
     /**
@@ -74,11 +77,14 @@ class AuthController extends BaseController
      * @param Request $request
      * @return JsonResponse
      */
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
-        // Revoke all tokens
-        auth()->user()->tokens()->delete();
-        $this->message = config('message.user_logout.success');
-        return $this->response($this->status, $this->message);
+        try {
+            // Revoke all tokens
+            auth()->user()->tokens()->delete();
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            return $this->responseException($exception->getMessage());
+        }
     }
 }

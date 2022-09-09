@@ -1,6 +1,5 @@
 <?php namespace App\Services;
 
-use App\Repositories\Classes\ClassRepository;
 use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
@@ -10,23 +9,21 @@ class CrudService
     /**
      * The user repository.
      *
-     * @var Model
      */
-    public $userRepository;
+    public UserRepository|Model $userRepository;
 
     /**
      * The class repository.
      *
-     * @var Model
      */
-    public $classRepository;
+    #public $classRepository;
 
     public function __construct(
         UserRepository $userRepository,
-        ClassRepository $classRepository
+        #ClassRepository $classRepository
     ){
         $this->userRepository = $userRepository;
-        $this->classRepository = $classRepository;
+        #$this->classRepository = $classRepository;
     }
 
     /**

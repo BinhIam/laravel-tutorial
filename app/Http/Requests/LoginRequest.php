@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use JetBrains\PhpStorm\ArrayShape;
 
 class LoginRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class LoginRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,7 +22,7 @@ class LoginRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email' => 'required|email',
@@ -29,6 +30,11 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    /**
+     * Get the validation message that apply to the request.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [
