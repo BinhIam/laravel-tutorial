@@ -1,11 +1,19 @@
 <?php
 
 namespace App\Helpers;
+use App\Models\User;
+use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class ResponseHelper
 {
+
+    public UserTransformer $userTransformer;
+    public function __construct(UserTransformer $userTransformer)
+    {
+        $this->userTransformer = $userTransformer;
+    }
     /**
      * @description Return response
      *
@@ -70,13 +78,14 @@ class ResponseHelper
      * @description Return success response
      *
      * @param null $data
-     * @return JsonResponse
+
      */
-    public function responseSuccess($data = null): JsonResponse
+    public function responseSuccess($data = null)
     {
         return $this->setResponse(
             config('constant.message.success'),
             config('constant.status.success'),
+            #$this->userTransformer->transform($data)
             $data
         );
     }

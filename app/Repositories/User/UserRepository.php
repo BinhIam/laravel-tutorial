@@ -117,11 +117,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
      * Search full text
      *
      * @param $str
-     * @return Model|UserRepository|null
+     * @return Collection
      */
-    public function searchFullTextUser($str): Model|UserRepository|null
+    public function searchFullTextUser($str): Collection
     {
-        return $this->model()->search($str)->get();
+        return User::search($str)->get();
     }
 
 }

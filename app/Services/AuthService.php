@@ -1,6 +1,7 @@
 <?php namespace App\Services;
 
 use App\Helpers\ResponseHelper;
+use App\Models\User;
 use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;

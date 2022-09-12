@@ -14,15 +14,11 @@ class UserController extends BaseController
     /**
      * Display a listing of the resource for user
      *
-     * @return JsonResponse|ServiceProvider
+     * @return JsonResponse|ServiceProvider|Model
      */
-    public function index(Request $request): JsonResponse|ServiceProvider
+    public function index(): JsonResponse|ServiceProvider|Model
     {
-        if ($request->isMethod('get')) {
-            $listUser = $this->repository->findAll();
-        } else {
-            $listUser = $this->userService->searchFullText($request);
-        }
+        $listUser = $this->repository->findAll();
         return $this->responseHelper->responseSuccess($listUser);
     }
 
@@ -86,5 +82,16 @@ class UserController extends BaseController
         } catch (Exception $exception) {
             return $this->responseHelper->responseException($exception);
         }
+    }
+
+    /**
+     * Search full text
+     *
+     * @param $request
+     */
+    public function searchFullText($request)
+    {
+        $listUser = $this->userService->searchFullText($request);
+        return $this->responseHelper->responseSuccess($listUser);
     }
 }

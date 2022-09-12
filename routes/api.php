@@ -19,5 +19,6 @@ Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'regis
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('users', App\Http\Controllers\Api\UserController::class);
+    Route::get('/users/search/{search}', [App\Http\Controllers\Api\UserController::class, 'searchFullText']);
     Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
 });

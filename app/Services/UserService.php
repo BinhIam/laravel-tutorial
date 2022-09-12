@@ -151,9 +151,8 @@ class UserService
      * Search user by text
      *
      * @param $text
-     * @return Model
      */
-    public function searchFullText($text): Model
+    public function searchFullText($text)
     {
         return $this->userRepository->searchFullTextUser($text);
     }
