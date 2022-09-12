@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('classes', function (Blueprint $table) {
-            $table->string('name');
-            $table->integer('slot');
+        Schema::create('schools', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -26,9 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('classes', function (Blueprint $table) {
-            $table->dropColumn('name');
-            $table->dropColumn('slot');
-        });
+        Schema::dropIfExists('schools');
     }
 };

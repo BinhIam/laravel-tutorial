@@ -12,18 +12,22 @@ class UserController extends BaseController
 {
 
     /**
-     * @description Display a listing of the resource for user
+     * Display a listing of the resource for user
      *
      * @return JsonResponse|ServiceProvider
      */
-    public function index(): JsonResponse|ServiceProvider
+    public function index(Request $request): JsonResponse|ServiceProvider
     {
-        $listUser = $this->userService->findAll();
+        if ($request->isMethod('get')) {
+            $listUser = $this->repository->findAll();
+        } else {
+            $listUser = $this->userService->searchFullText($request);
+        }
         return $this->responseHelper->responseSuccess($listUser);
     }
 
     /**
-     * @description Store a newly created resource in storage.
+     * Store a newly created resource in storage.
      *
      * @param UserRequest $request
      * @return JsonResponse|ServiceProvider
@@ -39,7 +43,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @description Update the specified resource in storage.
+     * Update the specified resource in storage.
      *
      * @param UserRequest $request
      * @param $id
@@ -55,7 +59,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @description Show specific user
+     * Show specific user
      *
      * @param $id
      * @return JsonResponse|ServiceProvider
@@ -70,7 +74,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @description Delete specific user
+     * Delete specific user
      *
      * @param $id
      * @return JsonResponse|ServiceProvider

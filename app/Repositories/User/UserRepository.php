@@ -15,7 +15,8 @@ use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
     /**
-     * @description Return the model
+     * Return the model
+     *
      * @return string
      */
     public function model(): string
@@ -24,7 +25,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * @description Create user instant
+     * Create user instant
+     *
      * @param array $request
      * @return Model
      */
@@ -34,7 +36,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * @description Register new user
+     * Register new user
+     *
      * @param array $request
      * @return Model
      */
@@ -44,7 +47,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * @description Update user instant
+     * Update user instant
+     *
      * @param $id
      * @param array $array
      * @param array $option
@@ -56,7 +60,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * @description Find all user instant
+     * Find all user instant
+     *
      * @return array
      */
     public function findAll(): array
@@ -65,7 +70,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * @description Count all user instant
+     * Count all user instant
+     *
      * @return int
      */
     public function countAll(): int
@@ -74,7 +80,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * @description Count all user instant
+     * Count all user instant
+     *
      * @param $id
      * @return Collection|Model
      */
@@ -84,7 +91,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * @description Delete user instant
+     * Delete user instant
+     *
      * @param int $id
      * @return bool|null
      * @throws Exception
@@ -95,13 +103,25 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
-     * @description Find by column
+     * Find by column
+     *
      * @param $value
      * @return Model|UserRepository|null
      */
     public function findByEmail($value): Model|UserRepository|null
     {
         return $this->getByColumn($value, 'email');
+    }
+
+    /**
+     * Search full text
+     *
+     * @param $str
+     * @return Model|UserRepository|null
+     */
+    public function searchFullTextUser($str): Model|UserRepository|null
+    {
+        return $this->model()->search($str)->get();
     }
 
 }

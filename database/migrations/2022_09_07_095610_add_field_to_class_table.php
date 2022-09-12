@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldToUsersTable extends Migration
+class AddFieldToClassTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddFieldToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->integer('age')->nullable();
-            $table->integer('class_id')->nullable();
+        Schema::table('classes', function (Blueprint $table) {
+            $table->string('name');
+            $table->integer('slot');
         });
     }
 
@@ -26,9 +26,9 @@ class AddFieldToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('age');
-            $table->dropColumn('class_id');
+        Schema::table('classes', function (Blueprint $table) {
+            $table->dropColumn('name');
+            $table->dropColumn('slot');
         });
     }
 }

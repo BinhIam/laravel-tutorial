@@ -146,5 +146,16 @@ class UserService
         }
         return $this->responseHelper->responseSuccess($user);
     }
+
+    /**
+     * Search user by text
+     *
+     * @param $text
+     * @return Model
+     */
+    public function searchFullText($text): Model
+    {
+        return $this->userRepository->searchFullTextUser($text);
+    }
 }
 
