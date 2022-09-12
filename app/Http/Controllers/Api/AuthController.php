@@ -11,7 +11,7 @@ use Illuminate\Support\ServiceProvider;
 class AuthController extends BaseController
 {
     /**
-     * @description Register new user
+     * Register new user
      *
      * @param RegisterRequest $request
      * @return JsonResponse|ServiceProvider
@@ -26,7 +26,7 @@ class AuthController extends BaseController
     }
 
     /**
-     * @description Show the list user
+     * Show the list user
      *
      * @param LoginRequest $request
      * @return JsonResponse|ServiceProvider
@@ -41,7 +41,7 @@ class AuthController extends BaseController
     }
 
     /**
-     * @description Log out user
+     * Log out user
      *
      * @param Request $request
      * @return JsonResponse|ServiceProvider

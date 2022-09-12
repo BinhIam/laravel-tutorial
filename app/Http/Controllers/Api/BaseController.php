@@ -33,7 +33,7 @@ class BaseController extends Controller
     public mixed $responseHelper;
 
     /**
-     * @description Construct
+     * Construct
      *
      */
     public function __construct(UserRepository $repository, ResponseHelper $responseHelper)
