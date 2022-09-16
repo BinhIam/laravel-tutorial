@@ -124,4 +124,16 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return User::search($str)->get();
     }
 
+    /**
+     * Send mail to user by command
+     *
+     * @param $str
+     * @return
+     */
+    public function mailToUserCommand($str)
+    {
+        return $this->getByColumn($str, 'email');
+    }
+
+
 }

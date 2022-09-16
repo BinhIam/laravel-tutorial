@@ -209,6 +209,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'ResponseHelper'=>'App\Helpers\ResponseHelper::class'
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 

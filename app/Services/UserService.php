@@ -156,5 +156,7 @@ class UserService
     {
         return $this->userRepository->searchFullTextUser($text);
     }
+
+
 }
 

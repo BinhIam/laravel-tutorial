@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/caching', [App\Http\Controllers\CachingController::class, 'index']);
+Route::get('/redis', [App\Http\Controllers\RedisController::class, 'index']);
+Route::get('/redis/{id}', [App\Http\Controllers\RedisController::class, 'getVideo']);
+Route::get('/redis/{id}/download', [App\Http\Controllers\RedisController::class, 'downloadVideo']);

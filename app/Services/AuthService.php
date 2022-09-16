@@ -1,10 +1,13 @@
 <?php namespace App\Services;
 
+use App\Events\UserRegistered;
 use App\Helpers\ResponseHelper;
+use App\Listeners\UserRegisterd;
 use App\Models\User;
 use App\Repositories\User\UserRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -45,6 +48,7 @@ class AuthService
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password'))
         ]);
+        event(new UserRegistered);
         if (!$user->exists) {
             return $this->responseHelper->responseFail();
         }

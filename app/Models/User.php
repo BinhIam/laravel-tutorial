@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\Cacheable;
 use App\Traits\RegisterClass;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,6 +11,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
 
+/**
+ * class User models
+ * author: nguyen.binh@jvb-corp.com
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, RegisterClass, Searchable;
@@ -57,5 +62,20 @@ class User extends Authenticatable
             'name' => $this->name,
             'email' => $this->email
         ];
+    }
+
+
+    /**
+     * Generate key for caching
+     * @return
+     */
+    public function getCacheKey()
+    {
+        // Example: App\User/1-13134234
+        return sprintf("%s/%s-%s",
+            get_class($this),
+            $this->id,
+            $this->updated_at
+        );
     }
 }
