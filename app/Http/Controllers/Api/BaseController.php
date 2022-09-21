@@ -44,4 +44,13 @@ class BaseController extends Controller
         $this->authService = app('AuthService');
     }
 
+    public function tryBlock($response)
+    {
+        try {
+            return $response;
+        } catch (\Exception $exception) {
+            return $this->responseHelper->responseException($exception);
+        }
+    }
+
 }

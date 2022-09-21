@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\RedisCommonService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
+use Redis;
 
 /**
  *
@@ -21,6 +22,16 @@ class RedisController extends Controller
     {
         $counter = $this->redis->visitCounters();
         return view('redis', compact('counter'));
+    }
+
+
+    /**
+     * get list user from redis instead of run query ( Redis cache )
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function view()
+    {
+        return $this->redis->getViewFromRedis();
     }
 
 

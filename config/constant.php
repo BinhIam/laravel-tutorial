@@ -13,5 +13,8 @@ return [
         'not_found' => 404,
         'success' => 200,
         'error' => 500
-    ]
+    ],
+    'GIT_HUB' => 'github',
+    'GOOGLE' => 'google',
+    'FACEBOOK' => 'facebook'
 ];

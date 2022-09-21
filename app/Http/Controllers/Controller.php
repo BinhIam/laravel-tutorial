@@ -59,5 +59,7 @@ class Controller extends BaseController
         $this->redis = $redisCommonService;
         $this->userService = app('UserService');
         $this->authService = app('AuthService');
+
+        $this->middleware('guest')->except('logout');
     }
 }

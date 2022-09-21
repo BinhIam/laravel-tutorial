@@ -8,6 +8,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ *
+ */
 class AuthController extends BaseController
 {
     /**
@@ -18,11 +21,8 @@ class AuthController extends BaseController
      */
     public function register(RegisterRequest $request): JsonResponse|ServiceProvider
     {
-        try {
-            return $this->authService->register($request);
-        } catch (\Exception $exception) {
-            return $this->responseHelper->responseException($exception);
-        }
+        $response = $this->authService->register($request);
+        return $this->tryBlock($response);
     }
 
     /**
@@ -33,11 +33,8 @@ class AuthController extends BaseController
      */
     public function login(LoginRequest $request): JsonResponse|ServiceProvider
     {
-        try {
-            return $this->authService->login($request);
-        } catch (\Exception $exception) {
-            return $this->responseHelper->responseException($exception);
-        }
+        $response = $this->authService->login($request);
+        return $this->tryBlock($response);
     }
 
     /**
@@ -48,10 +45,7 @@ class AuthController extends BaseController
      */
     public function logout(Request $request): JsonResponse|ServiceProvider
     {
-        try {
-            return $this->authService->logout();
-        } catch (\Exception $exception) {
-            return $this->responseHelper->responseException($exception);
-        }
+        $response = $this->authService->logout();
+        return $this->tryBlock($response);
     }
 }
